@@ -25,7 +25,7 @@ body {
     color: #212121;
 }
 
-.gallery__list {
+.gallery{
     display: grid;
     width: 1200px;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));

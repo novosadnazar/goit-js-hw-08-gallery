@@ -64,28 +64,68 @@ const galleryItems = [
   },
 ];
 
-const galleryContainer = document.querySelector(".gallery__list");
-const lightbox = document.querySelector(".lightbox");
-const lightboxImage = document.querySelector(".lightbox__image");
-const closeButton = document.querySelector('[data-action="close-lightbox"]');
-const overley = document.querySelector(".lightbox__overlay");
 
-const createGalleryMarkup = (items) => {
+
+const galleryContainer = document.querySelector(".js-gallery");
+const lightbox = document.querySelector(".js-lightbox");
+const lightboxImage = document.querySelector(".lightbox__image");
+const closeBtn = document.querySelector('[data-action="close-lightbox"]');
+const overlay = document.querySelector(".lightbox__overlay");
+
+
+function createGalleryMarkup(items) {
   return items
-    .map((item) => {
-      return `
-        <li class="gallery__item">
-          <a class="gallery__link" href="${item.original}">
-            <img
-              class="gallery__image"
-              src="${item.preview}"
-              data-source="${item.original}"
-              alt="${item.description}"
-            />
-          </a>
-        </li>`;
-    })
+    .map(
+      ({ preview, original, description }) => `
+    <li class="gallery__item">
+      <a class="gallery__link" href="${original}">
+        <img
+          class="gallery__image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>
+  `
+    )
     .join("");
-};
+}
 
 galleryContainer.innerHTML = createGalleryMarkup(galleryItems);
+
+galleryContainer.addEventListener("click", onGalleryClick);
+closeBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", closeModal);
+window.addEventListener("keydown", onEscKeyPress);
+
+
+function onGalleryClick(evt) {
+  evt.preventDefault();
+
+  const img = evt.target;
+  if (img.nodeName !== "IMG") return;
+
+  const largeImageURL = img.dataset.source;
+
+  openModal(largeImageURL, img.alt);
+}
+
+function openModal(src, alt) {
+  lightbox.classList.add("is-open");
+  lightboxImage.src = src;
+  lightboxImage.alt = alt;
+}
+
+function closeModal() {
+  lightbox.classList.remove("is-open");
+  lightboxImage.src = "";
+  lightboxImage.alt = "";
+}
+
+function onEscKeyPress(evt) {
+  if (evt.code === "Escape") {
+    closeModal();
+  }
+}
+
